@@ -1,0 +1,41 @@
+# Secrets
+secrets.yaml
+
+# Folders
+prometheus/tsdb/
+downloads/
+grafana/plugins/
+grafana/sessions/
+radarrconfig/
+sonarrconfig/
+embyserver/ 
+nodered/
+flows.json
+homeassistant/config/.homekit.state
+traefik/acme.json
+.storage/
+webostv.conf
+plex/
+portainer/
+etc-pihole/
+known_devices.yaml
+
+# haconfig
+.HA_VERSION
+.uuid
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+*.db
+*.swp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

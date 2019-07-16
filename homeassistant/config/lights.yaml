@@ -1,0 +1,18 @@
+platform: limitlessled
+bridges:
+  - host: 192.168.1.22
+    version: 6
+    port: 5987
+    groups:
+    - number: 1
+      type: rgbww
+      name: livingroom
+    - number: 2
+      type: rgbww
+      name: bedroom
+    - number: 3
+      type: rgbww
+      name: ceiling
+    - number: 4
+      type: bridge-led
+      name: readinglight

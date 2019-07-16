@@ -1,0 +1,17 @@
+- platform: webostv
+  host: 192.168.1.76
+  name: tv
+  filename: webostv.conf
+  timeout: 5
+  turn_on_action: 
+    service: wake_on_lan.send_magic_packet
+    data: 
+      mac: "20:3D:BD:FF:C3:AA"
+  customize:
+    sources:
+      - Kodi
+      - Netflix
+      - Notifications
+      - PC
+      - PS4
+      - YouTube

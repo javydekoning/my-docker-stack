@@ -1,0 +1,185 @@
+server:
+  hide_if_away: false
+  icon: mdi:server
+  mac: D0:50:99:A2:AE:DA
+  name: server
+  picture:
+  track: true
+  vendor: ASRock Incorporation
+
+lightcontroller:
+  hide_if_away: false
+  icon: mdi:lightbulb
+  mac: F0:FE:6B:16:9B:FE
+  name: MiLight LedLight
+  picture:
+  track: true
+  vendor: Shanghai High-Flying Electronics Technology Co., Ltd
+
+echodot:
+  hide_if_away: false
+  icon: mdi:amazon
+  mac: 68:54:FD:4C:2D:2A
+  name: Amazon Echo Dot
+  picture: 
+  track: true
+  vendor: Amazon Technologies Inc.
+
+laptopmarieke:
+  hide_if_away: false
+  icon: mdi:laptop
+  mac: A0:C5:89:33:D2:E5
+  name: Laptop-Marieke
+  picture:
+  track: true
+  vendor: Intel Corporate
+
+gainspand5d253:
+  hide_if_away: false
+  icon:
+  mac: 20:F8:5E:D5:D2:53
+  name: GainSpand5d253
+  picture:
+  track: true
+  vendor: Delta Electronics
+
+ipad:
+  hide_if_away: false
+  icon:
+  mac: 78:7B:8A:74:26:2B
+  name: iPad
+  picture:
+  track: true
+  vendor: Apple, Inc.
+
+mbpjavy:
+  hide_if_away: false
+  icon:
+  mac: 8C:85:90:43:F9:CB
+  name: MBP-Javy
+  picture:
+  track: true
+
+Wietske:
+  hide_if_away: true
+  icon:
+  mac: BC:E1:43:5F:0C:32
+  name: iPhonevnWietske
+  picture:
+  track: true
+
+tv:
+  hide_if_away: false
+  icon:
+  mac: 20:3D:BD:FF:C3:AA
+  name: LGwebOSTV
+  picture:
+  track: true
+
+vero4k:
+  hide_if_away: false
+  icon:
+  mac: 10:D0:7A:AB:B8:26
+  name: Vero4k
+  picture:
+  track: true
+
+Javy:
+  hide_if_away: false
+  icon:
+  mac: DC:08:0F:26:DF:FB
+  name: Javy
+  picture:
+  track: true
+  icon: mdi:human-male
+
+
+bc_30_d9_2a_d9_1e:
+  hide_if_away: false
+  icon:
+  mac: BC:30:D9:2A:D9:1E
+  name: bc 30 d9 2a d9 1e
+  picture:
+  track: true
+
+galaxy_s7:
+  hide_if_away: false
+  icon:
+  mac: 00:9D:6B:09:74:C5
+  name: Galaxy-S7
+  picture:
+  track: true
+
+Marieke:
+  hide_if_away: false
+  icon:
+  mac: C4:61:8B:A5:F9:DF
+  name: Marieke
+  picture:
+  track: true
+  icon: mdi:human-female
+
+laptop_2jblnrrc:
+  hide_if_away: false
+  icon:
+  mac: 50:5B:C2:27:43:AE
+  name: LAPTOP-2JBLNRRC
+  picture:
+  track: true
+
+printer:
+  hide_if_away: false
+  icon:
+  mac: C8:D9:D2:B2:C6:9A
+  name: printer
+  picture:
+  track: true
+
+mbp_van_wietske:
+  hide_if_away: false
+  icon:
+  mac: 78:4F:43:98:FD:DC
+  name: MBP-van-Wietske
+  picture:
+  track: true
+
+iphonevrenaaten:
+  hide_if_away: false
+  icon:
+  mac: F0:79:60:4E:38:BC
+  name: iPhonevrenAaten
+  picture:
+  track: true
+
+60_1d_91_ac_4e_65:
+  hide_if_away: false
+  icon:
+  mac: 60:1D:91:AC:4E:65
+  name: 60 1d 91 ac 4e 65
+  picture:
+  track: true
+
+galaxy_s9:
+  hide_if_away: false
+  icon:
+  mac: 08:C5:E1:54:4E:3A
+  name: Galaxy-S9
+  picture:
+  track: true
+
+boryss_mbp:
+  hide_if_away: false
+  icon:
+  mac: A8:BB:CF:24:85:78
+  name: Boryss-MBP
+  picture:
+  track: true
+
+galaxy_s9_2:
+  hide_if_away: false
+  icon:
+  mac: 24:18:1D:EE:4F:C5
+  name: Galaxy-S9
+  picture:
+  track: true
+

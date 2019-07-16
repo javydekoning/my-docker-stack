@@ -1,0 +1,9 @@
+name: movies
+entities:
+  light.livingroom:
+    state: on
+    brightness: 126
+  light.ceiling:
+    state: off
+  media_player.tv:
+    state: on

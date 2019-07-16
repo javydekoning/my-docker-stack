@@ -1,0 +1,6 @@
+type: alexa
+listen_port: 8300
+expose_by_default: true
+exposed_domains:
+  - light
+  - media_player

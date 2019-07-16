@@ -1,0 +1,8 @@
+name: livingroombright
+entities:
+  light.livingroom:
+    state: on
+    brightness: 255
+  light.ceiling:
+    state: on
+    brightness: 255

@@ -1,0 +1,33 @@
+default_view:
+  name: DEFAULT
+  view: yes
+  icon: mdi:home
+  entities:
+    - group.main_room
+    - group.bedroom
+    - sun.sun
+    - device_tracker.Javy
+    - device_tracker.Marieke
+# sesnsor_view:
+#  name: sensor
+#  view: yes
+#  icon: mdi:pulse
+#  entities:
+#    - group.presence
+#    - group.wunderground
+#    - sun.sun
+
+      #Groups
+main_room:
+  name: Main Room
+  entities:
+    - media_player.tv
+    - light.livingroom
+    - light.ceiling
+    - scene.movies
+    - scene.livingroombright
+bedroom: 
+  name: Bedroom
+  entities: 
+    - light.bedroom
+    - light.readinglight

@@ -1,0 +1,188 @@
+version: '3'
+services:
+  traefik:
+    image: traefik
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "./traefik/traefik.toml:/traefik.toml"
+      - "./traefik/acme.json:/acme.json"
+    labels:
+      - "traefik.port=8080"
+      - "traefik.frontend.rule=Host:lab.javydekoning.com"  
+      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
+  
+  portainer:
+    container_name: portainer
+    image: portainer/portainer:latest
+    restart: unless-stopped
+    ports: 
+      - "9000:9000"
+    labels:
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:portainer.lab.javydekoning.com"
+    volumes:
+      - ./portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    restart: unless-stopped
+    ports: 
+      - "8123:8123"   #web frontend
+      - "8300:8300"   #hue emulation
+      - "51826:51826" #homekit 
+    labels:
+      - "traefik.port=8123"
+      - "traefik.frontend.rule=Host:hass.lab.javydekoning.com"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - ./homeassistant/config:/config
+
+  rutorrent:
+    container_name: rutorrent
+    image: diameter/rtorrent-rutorrent:latest
+    restart: unless-stopped
+    ports: 
+      - "8080:8080" 
+      - "49160:49160/udp" 
+      - "49161:49161"
+    labels:
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:rutorrent.lab.javydekoning.com"  
+    volumes: 
+      - ./downloads:/downloads 
+
+  nfs:
+    container_name: nfs
+    image: fuzzle/docker-nfs-server:latest
+    restart: unless-stopped
+    ports:
+      - "111:111"
+      - "111:111/udp"
+      - "2049:2049"
+      - "2029:2049/udp"
+      - "32765:32765"
+      - "32765:32765/udp"
+      - "32766:32766"
+      - "32766:32766/udp"
+      - "32767:32767"
+      - "32767:32767/udp"
+    environment:
+      - 'NFS_EXPORT_DIR_1=/nfs'
+      - 'NFS_EXPORT_DOMAIN_1=*'
+      - 'NFS_EXPORT_OPTIONS_1=ro,insecure,no_subtree_check,no_root_squash,fsid=1'
+    volumes:
+      - ./downloads:/nfs
+    privileged: true
+    labels: 
+      - "traefik.enable=false"
+
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr:latest
+    restart: unless-stopped
+    ports:
+      - "8989:8989"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./sonarrconfig:/config
+      - ./downloads:/downloads
+    labels:
+      - "traefik.port=8989"
+      - "traefik.frontend.rule=Host:sonarr.lab.javydekoning.com"  
+      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
+
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr:latest
+    restart: unless-stopped
+    ports:
+      - "7878:7878"
+    labels:
+      - "traefik.port=7878"
+      - "traefik.frontend.rule=Host:radarr.lab.javydekoning.com"  
+      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro 
+      - ./downloads:/downloads
+      - ./radarrconfig:/config:rw
+
+  emby:
+    image: emby/embyserver:latest
+    container_name: emby
+    ports:
+      - 8096:8096
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./embyserver:/config
+      - ./downloads:/downloads
+    labels:
+      - "traefik.port=8096"
+      - "traefik.frontend.rule=Host:emby.lab.javydekoning.com"   
+      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
+      - AUTO_UPDATES_ON=true
+
+  watchtower:
+    container_name: watchtower
+    restart: always
+    image: v2tec/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --schedule "0 0 10 * * *" --cleanup
+
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    ports:
+      - 32400:32400/tcp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    environment:
+      - PLEX_CLAIM=claim-5atxMAs6oBnGYUuCysgq
+      - ADVERTISE_IP=http://192.168.1.9:32400/
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /srv/docker/plex:/config
+      - /srv/docker/downloads/movies:/data/movies
+      - /srv/docker/downloads/tv:/data/tv
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      #- "67:67/udp" pihole not running as DHCP
+      - "8001:80/tcp"
+      - "8002:443/tcp"
+    environment:
+      TZ: 'Europe/Amsterdam'
+      WEBPASSWORD: 'NotMyPassword'
+      VIRTUAL_HOST: 'pihole.lab.javydekoning.com'
+      ServerIP: '192.168.1.9'
+    volumes:
+       - './etc-pihole/:/etc/pihole/'
+       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    labels:
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:pihole.lab.javydekoning.com"
+      - "com.centurylinklabs.watchtower.enable=false"

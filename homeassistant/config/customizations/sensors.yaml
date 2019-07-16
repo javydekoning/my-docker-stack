@@ -1,0 +1,31 @@
+#Wunderground
+sensor.pws_alerts:
+  friendly_name: Severe Weather
+  icon: mdi:alert-octagon
+sensor.pws_temp_c:
+  friendly_name: Temprature (C)
+  icon: mdi:auto-fix
+sensor.pws_feelslike_c:
+  friendly_name: Feels Like (C)
+  icon: mdi:auto-fix
+sensor.pws_location:
+  friendly_name: Location
+  icon: mdi:map-marker
+sensor.pws_observation_time:
+  friendly_name: Last update
+  icon: mdi:clock
+sensor.pws_precip_1hr_metric:
+  friendly_name: Perception (mm)
+  icon: mdi:weather-rainy
+sensor.pws_relative_humidity:
+  friendly_name: Humidity
+  icon: mdi:weather-rainy
+sensor.pws_weather:
+  friendly_name: Weather
+  icon: mdi:weather-partlycloudy
+sensor.pws_wind_dir:
+  friendly_name: Wind Direction
+  icon: mdi:weather-windy  
+sensor.pws_wind_kph:
+  friendly_name: Wind Speed (kph)    
+  icon: mdi:weather-windy
