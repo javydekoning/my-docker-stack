@@ -1,7 +1,7 @@
-version: '3'
+version: "3.5"
 services:
   traefik:
-    image: traefik
+    image: traefik:1.7
     container_name: traefik
     ports:
       - "80:80"
@@ -13,7 +13,6 @@ services:
     labels:
       - "traefik.port=8080"
       - "traefik.frontend.rule=Host:lab.javydekoning.com"  
-      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
   
   portainer:
     container_name: portainer
@@ -57,6 +56,8 @@ services:
       - "traefik.frontend.rule=Host:rutorrent.lab.javydekoning.com"  
     volumes: 
       - ./downloads:/downloads 
+    dns:
+      - 1.1.1.1
 
   nfs:
     container_name: nfs
@@ -96,22 +97,9 @@ services:
     labels:
       - "traefik.port=8989"
       - "traefik.frontend.rule=Host:sonarr.lab.javydekoning.com"  
-      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
-
-  radarr:
-    container_name: radarr
-    image: linuxserver/radarr:latest
-    restart: unless-stopped
-    ports:
-      - "7878:7878"
-    labels:
-      - "traefik.port=7878"
-      - "traefik.frontend.rule=Host:radarr.lab.javydekoning.com"  
-      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro 
-      - ./downloads:/downloads
-      - ./radarrconfig:/config:rw
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
 
   emby:
     image: emby/embyserver:latest
@@ -125,7 +113,6 @@ services:
     labels:
       - "traefik.port=8096"
       - "traefik.frontend.rule=Host:emby.lab.javydekoning.com"   
-      - "traefik.frontend.auth.basic=jdekoning:$$2y$$13$$A.W.AfXyBLMB7Zewm9FTQuyAEjFaIalu4VQk3EQmD2BJlZ99oOo02"
       - AUTO_UPDATES_ON=true
 
   watchtower:
@@ -135,6 +122,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --schedule "0 0 10 * * *" --cleanup
+    dns: 1.1.1.1
 
   plex:
     container_name: plex
@@ -165,7 +153,6 @@ services:
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      #- "67:67/udp" pihole not running as DHCP
       - "8001:80/tcp"
       - "8002:443/tcp"
     environment:
@@ -186,3 +173,20 @@ services:
       - "traefik.port=80"
       - "traefik.frontend.rule=Host:pihole.lab.javydekoning.com"
       - "com.centurylinklabs.watchtower.enable=false"
+
+  smokeping:
+    image: linuxserver/smokeping
+    container_name: smokeping
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - /srv/docker/smokeping/config:/config
+      - /srv/docker/smokeping/data:/data
+    ports:
+      - 8200:80
+    restart: unless-stopped
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8

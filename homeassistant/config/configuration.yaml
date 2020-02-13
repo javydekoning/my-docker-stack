@@ -46,9 +46,6 @@ discovery:
     - philips_hue
     - google_cast
 
-# Prometheus
-prometheus:
-
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
