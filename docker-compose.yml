@@ -1,4 +1,14 @@
 version: "3.5"
+
+networks: 
+  home:
+    driver: macvlan
+    driver_opts: 
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+
 services:
   traefik:
     image: traefik:1.7
@@ -31,13 +41,11 @@ services:
     container_name: home-assistant
     image: homeassistant/home-assistant:latest
     restart: unless-stopped
+    networks:
+      home:
+        ipv4_address: 192.168.1.200
     ports: 
-      - "8123:8123"   #web frontend
-      - "8300:8300"   #hue emulation
-      - "51826:51826" #homekit 
-    labels:
-      - "traefik.port=8123"
-      - "traefik.frontend.rule=Host:hass.lab.javydekoning.com"
+      - "80:8123"   #web frontend
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
@@ -97,9 +105,7 @@ services:
     labels:
       - "traefik.port=8989"
       - "traefik.frontend.rule=Host:sonarr.lab.javydekoning.com"  
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
+    dns: 1.1.1.1
 
   emby:
     image: emby/embyserver:latest
@@ -114,6 +120,7 @@ services:
       - "traefik.port=8096"
       - "traefik.frontend.rule=Host:emby.lab.javydekoning.com"   
       - AUTO_UPDATES_ON=true
+    dns: 1.1.1.1
 
   watchtower:
     container_name: watchtower
@@ -150,16 +157,19 @@ services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
+    networks:
+      home:
+        ipv4_address: 192.168.1.201
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "8001:80/tcp"
-      - "8002:443/tcp"
+      - "80:80/tcp"
+      - "443:443/tcp"
     environment:
       TZ: 'Europe/Amsterdam'
       WEBPASSWORD: 'NotMyPassword'
       VIRTUAL_HOST: 'pihole.lab.javydekoning.com'
-      ServerIP: '192.168.1.9'
+      ServerIP: '192.168.1.201'
     volumes:
        - './etc-pihole/:/etc/pihole/'
        - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
@@ -170,8 +180,6 @@ services:
       - NET_ADMIN
     restart: unless-stopped
     labels:
-      - "traefik.port=80"
-      - "traefik.frontend.rule=Host:pihole.lab.javydekoning.com"
       - "com.centurylinklabs.watchtower.enable=false"
 
   smokeping:
