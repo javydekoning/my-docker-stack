@@ -30,21 +30,18 @@ ssh-copy-id root@127.0.0.1
 
 ### add repo
 
-Uncomment repo urls
+Add the following repo urls to `/etc/apk/repositories`
 
 ```Bash
-vi /etc/apk/repositories
-
-#uncomment:
-#http://dl-4.alpinelinux.org/alpine/v3.7/main
-#http://dl-4.alpinelinux.org/alpine/v3.7/community
+http://dl-cdn.alpinelinux.org/alpine/latest-stable/main/
+http://dl-cdn.alpinelinux.org/alpine/latest-stable/main/community
 ```
 
 ### Install dependencies
 
 ```Bash
 apk update
-apk add docker py-pip vim git curl
+apk add docker py-pip vim git curl python-dev libffi-dev openssl-dev gcc libc-dev  make
 rm -rf /etc/timezone
 echo "Europe/Amsterdam" >> /etc/timezone
 ```
