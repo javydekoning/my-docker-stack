@@ -1,30 +1,31 @@
 version: "3.7"
 
 networks:
-  base_homelan:
+  base_frontend:
     external: true
-  base_backend:
-    external: true
+  homelan:
+    driver: macvlan
+    driver_opts: 
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
 
+services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
     networks:
-      base_homelan:
+      homelan:
         ipv4_address: 192.168.1.201
-    # ports:
-    #   - "53:53/tcp"
-    #   - "53:53/udp"
-    #   - "80:80/tcp"
-    #   - "443:443/tcp"
     environment:
       TZ: 'Europe/Amsterdam'
       WEBPASSWORD: 'NotMyPassword'
       VIRTUAL_HOST: 'pihole.lab.javydekoning.com'
       ServerIP: '192.168.1.201'
     volumes:
-       - './etc-pihole/:/etc/pihole/'
-       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+      - './etc-pihole/:/etc/pihole/'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
     dns:
       - 127.0.0.1
       - 1.1.1.1
@@ -33,3 +34,30 @@ networks:
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
+
+  nfs:
+    container_name: nfs
+    image: fuzzle/docker-nfs-server:latest
+    restart: unless-stopped
+    networks: 
+      - base_frontend
+    ports:
+      - "111:111"
+      - "111:111/udp"
+      - "2049:2049"
+      - "2029:2049/udp"
+      - "32765:32765"
+      - "32765:32765/udp"
+      - "32766:32766"
+      - "32766:32766/udp"
+      - "32767:32767"
+      - "32767:32767/udp"
+    environment:
+      - 'NFS_EXPORT_DIR_1=/nfs'
+      - 'NFS_EXPORT_DOMAIN_1=*'
+      - 'NFS_EXPORT_OPTIONS_1=ro,insecure,no_subtree_check,no_root_squash,fsid=1'
+    volumes:
+      - ../downloads:/nfs
+    privileged: true
+    labels: 
+      - "traefik.enable=false"

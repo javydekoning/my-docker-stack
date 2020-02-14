@@ -124,3 +124,16 @@ known_devices.yaml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+#smokeping
+monitoring/smokeping/config/Alerts
+monitoring/smokeping/config/Database
+monitoring/smokeping/config/General
+monitoring/smokeping/config/Presentation
+monitoring/smokeping/config/Probes
+monitoring/smokeping/config/Slaves
+monitoring/smokeping/config/httpd.conf
+monitoring/smokeping/config/pathnames
+monitoring/smokeping/config/site-confs/
+monitoring/smokeping/config/ssmtp.conf
+monitoring/smokeping/data/

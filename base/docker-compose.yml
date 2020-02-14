@@ -5,28 +5,21 @@ networks:
     driver: bridge
   backend:
     driver: bridge
-  homelan:
-    driver: macvlan
-    driver_opts: 
-      parent: eth0
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24
+
 services:
   portainer:
     container_name: portainer
     image: portainer/portainer:latest
     restart: unless-stopped
-    ports: 
-      - "9000:9000"
     labels:
-      - "traefik.port=9000"
-      - "traefik.frontend.rule=Host:portainer.lab.javydekoning.com"
+      - traefik.http.services.portainer.loadbalancer.server.port=9000
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.lab.javydekoning.com`)"
+      - "traefik.http.routers.portainer.entrypoints=web"    
     volumes:
       - ./portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - frontend
       - backend
 
   watchtower:
@@ -49,14 +42,23 @@ services:
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
-      - "8080:8080"
+    networks:
+      - frontend
+      - backend
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.lab.javydekoning.com`)"
+      - "traefik.http.routers.traefik.entrypoints=web"          
 
   whoami:
     image: "containous/whoami"
     container_name: "simple-service"
+    networks:
+      - backend
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.lab.javydekoning.com`)"
       - "traefik.http.routers.whoami.entrypoints=web"    

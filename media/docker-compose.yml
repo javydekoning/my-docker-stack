@@ -1,0 +1,65 @@
+version: "3.7"
+
+
+networks:
+  base_frontend:
+    external: true
+
+services:
+  rutorrent:
+    container_name: rutorrent
+    image: diameter/rtorrent-rutorrent:latest
+    restart: unless-stopped
+    ports: 
+      - "8080:8080" 
+      - "49160:49160/udp" 
+      - "49161:49161"
+    labels:
+      - traefik.http.services.rutorrent.loadbalancer.server.port=80
+      - "traefik.enable=true"
+      - "traefik.http.routers.rutorrent.rule=Host(`rutorrent.lab.javydekoning.com`)"
+      - "traefik.http.routers.rutorrent.entrypoints=web"    
+    volumes: 
+      - ../downloads:/downloads 
+    dns:
+      - 1.1.1.1
+    networks:
+      - base_frontend
+
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr:latest
+    restart: unless-stopped
+    ports:
+      - "8989:8989"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./sonarrconfig:/config
+      - ../downloads:/downloads
+    labels:
+      - traefik.http.services.sonarr.loadbalancer.server.port=8989
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.lab.javydekoning.com`)"
+      - "traefik.http.routers.sonarr.entrypoints=web" 
+    dns: 1.1.1.1
+    networks:
+      - base_frontend
+
+  emby:
+    image: emby/embyserver:latest
+    container_name: emby
+    ports:
+      - 8096:8096
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./embyserver:/config
+      - ../downloads:/downloads
+    labels:
+      - traefik.http.services.emby.loadbalancer.server.port=8096
+      - "traefik.enable=true"
+      - "traefik.http.routers.emby.rule=Host(`emby.lab.javydekoning.com`)"
+      - "traefik.http.routers.emby.entrypoints=web" 
+      - AUTO_UPDATES_ON=true
+    dns: 1.1.1.1
+    networks:
+      - base_frontend

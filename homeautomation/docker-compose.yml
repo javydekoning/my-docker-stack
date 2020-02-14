@@ -1,0 +1,25 @@
+version: "3.7"
+
+networks: 
+  networkservices_homelan:
+    external: true
+  base_backend:
+    external: true
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
+    restart: unless-stopped
+    networks:
+      networkservices_homelan:
+        ipv4_address: 192.168.1.200
+      base_backend:
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+      - ./homeassistant/config:/config
+    labels:
+      - traefik.http.services.homeassistant.loadbalancer.server.port=8123
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.lab.javydekoning.com`)"
+      - "traefik.http.routers.homeassistant.entrypoints=web"    
