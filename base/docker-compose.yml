@@ -1,0 +1,56 @@
+version: "3.7"
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer:latest
+    restart: unless-stopped
+    ports: 
+      - "9000:9000"
+    labels:
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:portainer.lab.javydekoning.com"
+    volumes:
+      - ./portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - frontend
+      - backend
+
+  watchtower:
+    container_name: watchtower
+    restart: always
+    image: v2tec/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --schedule "0 0 10 * * *" --cleanup
+    dns: 1.1.1.1
+
+  traefik:
+    image: "traefik:latest"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami:
+    image: "containous/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
+      - "traefik.http.routers.whoami.entrypoints=web"    

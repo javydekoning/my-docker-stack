@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.7"
 
 networks: 
   home:
@@ -10,33 +10,6 @@ networks:
         - subnet: 192.168.1.0/24
 
 services:
-  traefik:
-    image: traefik:1.7
-    container_name: traefik
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "./traefik/traefik.toml:/traefik.toml"
-      - "./traefik/acme.json:/acme.json"
-    labels:
-      - "traefik.port=8080"
-      - "traefik.frontend.rule=Host:lab.javydekoning.com"  
-  
-  portainer:
-    container_name: portainer
-    image: portainer/portainer:latest
-    restart: unless-stopped
-    ports: 
-      - "9000:9000"
-    labels:
-      - "traefik.port=9000"
-      - "traefik.frontend.rule=Host:portainer.lab.javydekoning.com"
-    volumes:
-      - ./portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-
   homeassistant:
     container_name: home-assistant
     image: homeassistant/home-assistant:latest
@@ -122,15 +95,6 @@ services:
       - AUTO_UPDATES_ON=true
     dns: 1.1.1.1
 
-  watchtower:
-    container_name: watchtower
-    restart: always
-    image: v2tec/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --schedule "0 0 10 * * *" --cleanup
-    dns: 1.1.1.1
-
   plex:
     container_name: plex
     image: plexinc/pms-docker
@@ -181,20 +145,3 @@ services:
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-
-  smokeping:
-    image: linuxserver/smokeping
-    container_name: smokeping
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-    volumes:
-      - /srv/docker/smokeping/config:/config
-      - /srv/docker/smokeping/data:/data
-    ports:
-      - 8200:80
-    restart: unless-stopped
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
