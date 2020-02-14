@@ -5,7 +5,13 @@ networks:
     driver: bridge
   backend:
     driver: bridge
-
+  homelan:
+    driver: macvlan
+    driver_opts: 
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
 services:
   portainer:
     container_name: portainer

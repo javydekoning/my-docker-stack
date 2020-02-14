@@ -18,6 +18,7 @@ services:
     ports:
       - 8200:80
     restart: unless-stopped
+    networks: base_backend
     dns:
       - 1.1.1.1
       - 8.8.8.8
